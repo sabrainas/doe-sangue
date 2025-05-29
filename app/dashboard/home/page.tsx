@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { Droplet, Bell, User, MapPin, Phone } from "lucide-react";
+import { Bell, User, MapPin, Phone } from "lucide-react";
 
 export default function DashboardDoadorPage() {
     return (
