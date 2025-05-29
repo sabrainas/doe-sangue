@@ -1,7 +1,8 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { Heart, Droplet, Calendar, Users, ArrowRight } from "lucide-react"
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import { Heart, Calendar, Users, ArrowRight } from "lucide-react"
 
 export default function Home() {
   return (
@@ -9,8 +10,10 @@ export default function Home() {
       <header className="border-b">
         <div className="container flex h-16 items-center justify-between px-4 md:px-6">
           <Link href="/" className="flex items-center gap-2">
-            <Droplet className="h-6 w-6 text-red-600" />
-            <span className="text-xl font-bold">DoeVida</span>
+              <div className="bg-red-600 text-white p-2 rounded-lg mr-3">
+                <i className="fas fa-heartbeat text-2xl"></i>
+            </div>
+            <span className="text-xl font-bold">Hemolink</span>
           </Link>
           <nav className="hidden md:flex gap-6">
             <Link href="#como-funciona" className="text-sm font-medium hover:underline underline-offset-4">
@@ -207,80 +210,14 @@ export default function Home() {
             </div>
           </div>
         </section>
-
-        <section id="contato" className="w-full py-12 md:py-24 lg:py-32 bg-red-50">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-red-600">Entre em Contato</h2>
-                <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Tem alguma dúvida? Entre em contato conosco.
-                </p>
-              </div>
-            </div>
-            <div className="mx-auto grid max-w-5xl items-center gap-6 py-12 lg:grid-cols-2 lg:gap-12">
-              <div className="space-y-4">
-                <div className="grid gap-4">
-                  <div className="grid gap-2">
-                    <label htmlFor="name" className="text-sm font-medium leading-none">
-                      Nome
-                    </label>
-                    <input
-                      id="name"
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                      placeholder="Digite seu nome"
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <label htmlFor="email" className="text-sm font-medium leading-none">
-                      Email
-                    </label>
-                    <input
-                      id="email"
-                      type="email"
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                      placeholder="Digite seu email"
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <label htmlFor="message" className="text-sm font-medium leading-none">
-                      Mensagem
-                    </label>
-                    <textarea
-                      id="message"
-                      className="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                      placeholder="Digite sua mensagem"
-                    />
-                  </div>
-                  <Button className="bg-red-600 hover:bg-red-700">Enviar mensagem</Button>
-                </div>
-              </div>
-              <div className="space-y-4">
-                <h3 className="text-xl font-bold">Informações de Contato</h3>
-                <div className="space-y-2">
-                  <p className="flex items-center gap-2">
-                    <span className="font-medium">Email:</span>
-                    <span>contato@doevida.com.br</span>
-                  </p>
-                  <p className="flex items-center gap-2">
-                    <span className="font-medium">Telefone:</span>
-                    <span>(11) 1234-5678</span>
-                  </p>
-                  <p className="flex items-center gap-2">
-                    <span className="font-medium">Endereço:</span>
-                    <span>Av. Paulista, 1000 - São Paulo, SP</span>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
       </main>
       <footer className="border-t bg-gray-50">
         <div className="container flex flex-col gap-4 py-10 md:flex-row md:gap-8 md:py-12 px-4 md:px-6">
           <div className="flex flex-col gap-2 md:gap-4 md:flex-1">
             <Link href="/" className="flex items-center gap-2">
-              <Droplet className="h-6 w-6 text-red-600" />
+              <div className="bg-red-600 text-white p-2 rounded-lg mr-3">
+                  <i className="fas fa-heartbeat text-2xl"></i>
+              </div>
               <span className="text-xl font-bold">DoeVida</span>
             </Link>
             <p className="text-sm text-gray-500">Conectando doadores e hemocentros para salvar vidas.</p>
@@ -351,7 +288,7 @@ export default function Home() {
         <div className="border-t py-6">
           <div className="container flex flex-col items-center justify-between gap-4 md:flex-row px-4 md:px-6">
             <p className="text-xs text-gray-500">
-              &copy; {new Date().getFullYear()} DoeVida. Todos os direitos reservados.
+              &copy; {new Date().getFullYear()} Hemolink. Todos os direitos reservados.
             </p>
             <div className="flex gap-4">
               <Link href="#" className="text-xs hover:underline">
