@@ -32,7 +32,6 @@ export default function DashboardDoadorPage() {
                     </div>
                 </div>
             </header>
-
             {/* Main Content */}
             <main className="container mx-auto px-4 py-8 flex-grow">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
