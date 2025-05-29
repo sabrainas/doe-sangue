@@ -24,7 +24,7 @@ export default function DashboardDoadorPage() {
                             <Bell className="text-gray-600 text-xl cursor-pointer" />
                             <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-600"></span>
                         </div>
-                        <Link href="/login">
+                        <Link href="/dashboard/doador">
                             <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
                                 <User className="text-gray-600" />
                             </div>
