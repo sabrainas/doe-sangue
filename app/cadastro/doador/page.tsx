@@ -1,11 +1,32 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Droplet } from "lucide-react"
+"use client";
 
-export default function CadastroDoadorPage() {
+import Link from "next/link";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Droplet } from "lucide-react";
+import { useCreateDonor } from "@/hooks/create/useCreateDonors";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient();
+
+function CadastroDoadorPage() {
+  const { mutate: createDonor, isLoading } = useCreateDonor();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const donorData = {
+      nome: formData.get("nome") as string,
+      email: formData.get("email") as string,
+      cpf: formData.get("cpf") as string,
+      dataNascimento: formData.get("dataNascimento") as string,
+      tipo: formData.get("tipo") as string,
+      celular: formData.get("celular") as string,
+      cep: formData.get("cep") as string,
+      senha: formData.get("senha") as string,
+    };
+    createDonor(donorData);
+  };
+
   return (
     <div className="flex min-h-screen flex-col">
       <div className="flex flex-1 flex-col items-center justify-center px-4 py-12">
@@ -13,117 +34,147 @@ export default function CadastroDoadorPage() {
           <Droplet className="h-6 w-6 text-red-600" />
           <span className="text-xl font-bold">DoeVida</span>
         </Link>
-        <div className="w-full max-w-md space-y-6">
+        <form onSubmit={handleSubmit} className="w-full max-w-md space-y-6">
           <div className="space-y-2 text-center">
             <h1 className="text-3xl font-bold">Cadastro de Doador</h1>
             <p className="text-gray-500">Preencha seus dados para criar sua conta</p>
           </div>
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label htmlFor="nome" className="text-sm font-medium leading-none">
-                  Nome
-                </label>
-                <Input id="nome" placeholder="Seu nome" />
-              </div>
-              <div className="space-y-2">
-                <label htmlFor="sobrenome" className="text-sm font-medium leading-none">
-                  Sobrenome
-                </label>
-                <Input id="sobrenome" placeholder="Seu sobrenome" />
-              </div>
+            <div className="space-y-2">
+              <label htmlFor="nome" className="text-sm font-medium leading-none">
+                Nome
+              </label>
+              <input
+                id="nome"
+                name="nome"
+                type="text"
+                placeholder="Seu nome"
+                required
+                className="w-full px-4 py-2 border rounded-lg"
+              />
             </div>
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium leading-none">
                 Email
               </label>
-              <Input id="email" type="email" placeholder="seu.email@exemplo.com" />
+              <input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="Seu email"
+                required
+                className="w-full px-4 py-2 border rounded-lg"
+              />
             </div>
             <div className="space-y-2">
               <label htmlFor="cpf" className="text-sm font-medium leading-none">
                 CPF
               </label>
-              <Input id="cpf" placeholder="000.000.000-00" />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label htmlFor="data-nascimento" className="text-sm font-medium leading-none">
-                  Data de Nascimento
-                </label>
-                <Input id="data-nascimento" type="date" />
-              </div>
-              <div className="space-y-2">
-                <label htmlFor="tipo-sanguineo" className="text-sm font-medium leading-none">
-                  Tipo Sanguíneo
-                </label>
-                <Select>
-                  <SelectTrigger id="tipo-sanguineo">
-                    <SelectValue placeholder="Selecione" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="a+">A+</SelectItem>
-                    <SelectItem value="a-">A-</SelectItem>
-                    <SelectItem value="b+">B+</SelectItem>
-                    <SelectItem value="b-">B-</SelectItem>
-                    <SelectItem value="ab+">AB+</SelectItem>
-                    <SelectItem value="ab-">AB-</SelectItem>
-                    <SelectItem value="o+">O+</SelectItem>
-                    <SelectItem value="o-">O-</SelectItem>
-                    <SelectItem value="nao-sei">Não sei</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <input
+                id="cpf"
+                name="cpf"
+                type="text"
+                placeholder="Seu CPF"
+                required
+                className="w-full px-4 py-2 border rounded-lg"
+              />
             </div>
             <div className="space-y-2">
-              <label htmlFor="telefone" className="text-sm font-medium leading-none">
-                Telefone
+              <label htmlFor="dataNascimento" className="text-sm font-medium leading-none">
+                Data de Nascimento
               </label>
-              <Input id="telefone" placeholder="(00) 00000-0000" />
+              <input
+                id="dataNascimento"
+                name="dataNascimento"
+                type="date"
+                required
+                className="w-full px-4 py-2 border rounded-lg"
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="tipo" className="text-sm font-medium leading-none">
+                Tipo Sanguíneo
+              </label>
+              <select
+                id="tipo"
+                name="tipo"
+                required
+                className="w-full px-4 py-2 border rounded-lg"
+              >
+                <option value="">Selecione seu tipo sanguíneo</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="celular" className="text-sm font-medium leading-none">
+                Celular
+              </label>
+              <input
+                id="celular"
+                name="celular"
+                type="text"
+                placeholder="Seu celular"
+                required
+                className="w-full px-4 py-2 border rounded-lg"
+              />
             </div>
             <div className="space-y-2">
               <label htmlFor="cep" className="text-sm font-medium leading-none">
                 CEP
               </label>
-              <Input id="cep" placeholder="00000-000" />
+              <input
+                id="cep"
+                name="cep"
+                type="text"
+                placeholder="Seu CEP"
+                required
+                className="w-full px-4 py-2 border rounded-lg"
+              />
             </div>
             <div className="space-y-2">
               <label htmlFor="senha" className="text-sm font-medium leading-none">
                 Senha
               </label>
-              <Input id="senha" type="password" placeholder="••••••••" />
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="confirmar-senha" className="text-sm font-medium leading-none">
-                Confirmar Senha
-              </label>
-              <Input id="confirmar-senha" type="password" placeholder="••••••••" />
+              <input
+                id="senha"
+                name="senha"
+                type="password"
+                placeholder="Sua senha"
+                required
+                className="w-full px-4 py-2 border rounded-lg"
+              />
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="termos" />
-              <label
-                htmlFor="termos"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                Concordo com os{" "}
-                <Link href="#" className="text-red-600 hover:underline">
-                  Termos de Uso
-                </Link>{" "}
-                e{" "}
-                <Link href="#" className="text-red-600 hover:underline">
-                  Política de Privacidade
-                </Link>
+              <Checkbox id="termos" name="termos" required />
+              <label htmlFor="termos" className="text-sm">
+                Aceito os termos e condições
               </label>
             </div>
-            <Button className="w-full bg-red-600 hover:bg-red-700">Criar Conta</Button>
-            <div className="text-center text-sm">
-              Já tem uma conta?{" "}
-              <Link href="/login" className="text-red-600 hover:underline">
-                Faça login
-              </Link>
-            </div>
           </div>
-        </div>
+          <button
+            type="submit"
+            className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition"
+            disabled={isLoading}
+          >
+            {isLoading ? "Cadastrando..." : "Cadastrar"}
+          </button>
+        </form>
       </div>
     </div>
-  )
+  );
+}
+
+export default function CadastroDoadorPageWrapper() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <CadastroDoadorPage />
+    </QueryClientProvider>
+  );
 }

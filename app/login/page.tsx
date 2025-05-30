@@ -1,10 +1,28 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Droplet } from "lucide-react"
+"use client";
 
-export default function LoginPage() {
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Droplet } from "lucide-react";
+import { useLogin } from "@/hooks/login/useLogin";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient();
+
+function LoginPage() {
+  const { mutate: login, isLoading } = useLogin();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const loginData = {
+      email: formData.get("email") as string,
+      senha: formData.get("senha") as string,
+    };
+    login(loginData);
+  };
+
   return (
     <div className="flex min-h-screen flex-col">
       <div className="flex flex-1 flex-col items-center justify-center px-4 py-12">
@@ -20,63 +38,57 @@ export default function LoginPage() {
           <Tabs defaultValue="doador" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="doador">Doador</TabsTrigger>
-              <TabsTrigger value="hemocentro">Hemocentro</TabsTrigger>
+              <TabsTrigger value="hospital">Hospital</TabsTrigger>
             </TabsList>
-            <TabsContent value="doador" className="space-y-4 mt-4">
-              <div className="space-y-2">
-                <label htmlFor="email-doador" className="text-sm font-medium leading-none">
-                  Email
-                </label>
-                <Input id="email-doador" type="email" placeholder="seu.email@exemplo.com" />
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <label htmlFor="senha-doador" className="text-sm font-medium leading-none">
+            <TabsContent value="doador">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-2">
+                  <label htmlFor="email" className="text-sm font-medium leading-none">
+                    Email
+                  </label>
+                  <Input id="email" name="email" type="email" placeholder="Seu email" required />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="senha" className="text-sm font-medium leading-none">
                     Senha
                   </label>
-                  <Link href="/recuperar-senha" className="text-sm text-red-600 hover:underline">
-                    Esqueceu a senha?
-                  </Link>
+                  <Input id="senha" name="senha" type="password" placeholder="Sua senha" required />
                 </div>
-                <Input id="senha-doador" type="password" placeholder="••••••••" />
-              </div>
-              <Button className="w-full bg-red-600 hover:bg-red-700">Entrar como Doador</Button>
-              <div className="text-center text-sm">
-                Não tem uma conta?{" "}
-                <Link href="/cadastro/doador" className="text-red-600 hover:underline">
-                  Cadastre-se
-                </Link>
-              </div>
+                <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white" disabled={isLoading}>
+                  {isLoading ? "Entrando..." : "Entrar"}
+                </Button>
+              </form>
             </TabsContent>
-            <TabsContent value="hemocentro" className="space-y-4 mt-4">
-              <div className="space-y-2">
-                <label htmlFor="email-hemocentro" className="text-sm font-medium leading-none">
-                  Email
-                </label>
-                <Input id="email-hemocentro" type="email" placeholder="hemocentro@exemplo.com" />
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <label htmlFor="senha-hemocentro" className="text-sm font-medium leading-none">
+            <TabsContent value="hospital">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-2">
+                  <label htmlFor="email" className="text-sm font-medium leading-none">
+                    Email
+                  </label>
+                  <Input id="email" name="email" type="email" placeholder="Email do hospital" required />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="senha" className="text-sm font-medium leading-none">
                     Senha
                   </label>
-                  <Link href="/recuperar-senha" className="text-sm text-red-600 hover:underline">
-                    Esqueceu a senha?
-                  </Link>
+                  <Input id="senha" name="senha" type="password" placeholder="Senha do hospital" required />
                 </div>
-                <Input id="senha-hemocentro" type="password" placeholder="••••••••" />
-              </div>
-              <Button className="w-full bg-red-600 hover:bg-red-700">Entrar como Hemocentro</Button>
-              <div className="text-center text-sm">
-                Não tem uma conta?{" "}
-                <Link href="/cadastro/hemocentro" className="text-red-600 hover:underline">
-                  Cadastre-se
-                </Link>
-              </div>
+                <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white" disabled={isLoading}>
+                  {isLoading ? "Entrando..." : "Entrar"}
+                </Button>
+              </form>
             </TabsContent>
           </Tabs>
         </div>
       </div>
     </div>
-  )
+  );
+}
+
+export default function LoginPageWrapper() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <LoginPage />
+    </QueryClientProvider>
+  );
 }
