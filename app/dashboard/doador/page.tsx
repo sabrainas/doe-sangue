@@ -10,7 +10,7 @@ export default function DashboardDoadorPage() {
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <Link href="/" className="flex items-center gap-2">
             <div className="bg-red-600 text-white p-2 rounded-lg">
-              <i className="fas fa-heartbeat text-2xl"></i> {/* Ícone original do Font Awesome */}
+              <i className="fas fa-heartbeat text-2xl"></i> 
             </div>
             <h1 className="text-2xl font-bold text-red-600">HemoLink</h1>
           </Link>
@@ -170,7 +170,7 @@ export default function DashboardDoadorPage() {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <Link href="/" className="flex items-center gap-2">
               <div className="bg-red-600 text-white p-2 rounded-lg">
-                <i className="fas fa-heartbeat text-2xl"></i> {/* Ícone original do Font Awesome */}
+                <i className="fas fa-heartbeat text-2xl"></i>
               </div>
               <h2 className="text-xl font-bold text-red-600">HemoLink</h2>
             </Link>

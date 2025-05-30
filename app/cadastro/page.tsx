@@ -2,14 +2,17 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Droplet, User, Building2 } from "lucide-react"
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 export default function CadastroPage() {
   return (
     <div className="flex min-h-screen flex-col">
       <div className="flex flex-1 flex-col items-center justify-center px-4 py-12">
         <Link href="/" className="flex items-center gap-2 mb-8">
-          <Droplet className="h-6 w-6 text-red-600" />
-          <span className="text-xl font-bold">DoeVida</span>
+          <div className="bg-red-600 text-white p-2 rounded-lg">
+            <i className="fas fa-heartbeat text-2xl"></i>
+          </div>
+          <span className="text-xl font-bold">Hemolink</span>
         </Link>
         <div className="w-full max-w-3xl space-y-6">
           <div className="space-y-2 text-center">

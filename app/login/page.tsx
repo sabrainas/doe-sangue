@@ -4,8 +4,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Droplet } from "lucide-react";
 import { useLogin } from "@/hooks/login/useLogin";
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import { QueryClient, QueryClientProvider } from "react-query";
 
 const queryClient = new QueryClient();
@@ -27,8 +27,9 @@ function LoginPage() {
     <div className="flex min-h-screen flex-col">
       <div className="flex flex-1 flex-col items-center justify-center px-4 py-12">
         <Link href="/" className="flex items-center gap-2 mb-8">
-          <Droplet className="h-6 w-6 text-red-600" />
-          <span className="text-xl font-bold">DoeVida</span>
+          <div className="bg-red-600 text-white p-2 rounded-lg">
+            <i className="fas fa-heartbeat text-2xl"></i>
+          </div>          <span className="text-xl font-bold">Hemolink</span>
         </Link>
         <div className="w-full max-w-md space-y-6">
           <div className="space-y-2 text-center">

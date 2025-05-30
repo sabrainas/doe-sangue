@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Droplet } from "lucide-react";
 import { useCreateDonor } from "@/hooks/create/useCreateDonors";
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import { QueryClient, QueryClientProvider } from "react-query";
 
 const queryClient = new QueryClient();
@@ -31,8 +31,10 @@ function CadastroDoadorPage() {
     <div className="flex min-h-screen flex-col">
       <div className="flex flex-1 flex-col items-center justify-center px-4 py-12">
         <Link href="/" className="flex items-center gap-2 mb-8">
-          <Droplet className="h-6 w-6 text-red-600" />
-          <span className="text-xl font-bold">DoeVida</span>
+          <div className="bg-red-600 text-white p-2 rounded-lg">
+            <i className="fas fa-heartbeat text-2xl"></i>
+          </div>
+          <span className="text-xl font-bold">HemoLink</span>
         </Link>
         <form onSubmit={handleSubmit} className="w-full max-w-md space-y-6">
           <div className="space-y-2 text-center">

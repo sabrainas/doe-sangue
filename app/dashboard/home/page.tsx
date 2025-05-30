@@ -11,7 +11,7 @@ export default function DashboardDoadorPage() {
             <header className="bg-white shadow-sm">
                 <div className="container mx-auto px-4 py-4 flex justify-between items-center">
                     <Link href="/" className="flex items-center gap-2">
-                        <div className="bg-red-600 text-white p-2 rounded-lg mr-3">
+                        <div className="bg-red-600 text-white p-2 rounded-lg">
                             <i className="fas fa-heartbeat text-2xl"></i>
                         </div>
                         <h1 className="text-2xl font-bold text-red-600">Hemolink</h1>
