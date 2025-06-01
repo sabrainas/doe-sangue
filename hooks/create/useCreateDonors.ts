@@ -1,4 +1,4 @@
-import { useMutation } from "react-query";
+import { useMutation, UseMutationResult } from "@tanstack/react-query";
 import axios from "@/services/api";
 
 interface DonorData {
@@ -13,18 +13,15 @@ interface DonorData {
   senha: string;
 }
 
-const createDonor = async (donorData: DonorData) => {
+const createDonor = async (donorData: DonorData): Promise<DonorData> => {
   const response = await axios.post("/usuario/cadastrar", donorData);
   return response.data;
 };
 
-export const useCreateDonor = () => {
-  return useMutation(createDonor, {
-    onSuccess: () => {
-      console.log("Doador criado com sucesso!");
-    },
-    onError: (error) => {
-      console.error("Erro ao criar doador:", error);
-    },
+export const useCreateDonor = (): UseMutationResult<DonorData, Error, DonorData, unknown> => {
+  return useMutation<DonorData, Error, DonorData>({
+    mutationFn: createDonor,
+    onSuccess: () => { console.log("Doador criado com sucesso!"); },
+    onError: (error: Error) => { console.error(error.message); },
   });
 };

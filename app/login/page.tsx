@@ -6,12 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useLogin } from "@/hooks/login/useLogin";
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
 
 function LoginPage() {
-  const { mutate: login, isLoading } = useLogin();
+  const { mutate: login, status } = useLogin();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -51,8 +51,8 @@ function LoginPage() {
                   </label>
                   <Input id="senha" name="senha" type="password" placeholder="Sua senha" required />
                 </div>
-                <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white" disabled={isLoading}>
-                  {isLoading ? "Entrando..." : "Entrar"}
+                <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white" disabled={status === "pending"}>
+                  {status === "pending" ? "Entrando..." : "Entrar"}
                 </Button>
               </form>
               <div className="text-center p-3">

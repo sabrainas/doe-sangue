@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { User, MapPin, Phone } from "lucide-react";
 import { useGetAllDonors } from "@/hooks/get-donors/useGetAllDonors";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -70,7 +70,7 @@ function DashboardDoadorPage() {
                                     </div>
                                     <div className="mt-4 flex items-center text-sm text-gray-600">
                                         <MapPin className="mr-2 text-red-500" />
-                                        <span>{donor.cep}</span>
+                                        <span> </span>
                                     </div>
                                     <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center">
                                         <span className={`text-xs px-2 py-1 rounded ${donor.urgencyColor}`}>{donor.urgency}</span>

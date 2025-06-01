@@ -4,15 +4,16 @@ import Link from "next/link";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useCreateDonor } from "@/hooks/create/useCreateDonors";
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useGetListarRegioes } from "@/hooks/get-regions/useGetRegions";
-import router from "next/router";
+import { useRouter } from "next/navigation";
 
 const queryClient = new QueryClient();
 
 function CadastroDoadorPage() {
   const { data: regions, isLoading: isLoadingRegions } = useGetListarRegioes();
-  const { mutate: createDonor, isLoading: isCreatingDonor } = useCreateDonor();
+  const { mutate: createDonor, isPending: isCreatingDonor } = useCreateDonor();
+  const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,7 +33,7 @@ function CadastroDoadorPage() {
       onSuccess: (response) => {
         localStorage.setItem("userData", JSON.stringify(response));
         alert("Doador criado com sucesso!");
-        router.push("/login"); 
+        router.push("/login");
       },
       onError: (error) => {
         console.error("Erro ao criar doador:", error);
@@ -146,8 +147,11 @@ function CadastroDoadorPage() {
                 Região
               </label>
               <select
+                id="regiao"
+                name="regiao" 
                 disabled={isLoadingRegions}
                 className="w-full px-4 py-2 border rounded-lg"
+                required
               >
                 <option value="">Selecione uma região</option>
                 {regions?.map((region: string, index: number) => {

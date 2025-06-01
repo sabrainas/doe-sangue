@@ -30,25 +30,6 @@ export default function EditarDoadorPage() {
         setFormData((prev) => ({ ...prev, bloodType: type }));
     };
 
-    const handleCepSearch = () => {
-        const cep = formData.cep.replace(/\D/g, "");
-        if (cep.length !== 8) {
-            alert("CEP inválido. Digite os 8 dígitos.");
-            return;
-        }
-
-        // Simulação de busca de CEP
-        setTimeout(() => {
-            setFormData((prev) => ({
-                ...prev,
-                street: "Rua das Flores",
-                neighborhood: "Jardim Primavera",
-                city: "São Paulo",
-                state: "SP",
-            }));
-        }, 800);
-    };
-
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -212,28 +193,6 @@ export default function EditarDoadorPage() {
                                     placeholder="(00) 00000-0000"
                                     required
                                 />
-                            </div>
-
-                            <div className="mb-6">
-                                <label className="block text-gray-700 font-medium mb-2">CEP</label>
-                                <div className="flex">
-                                    <input
-                                        type="text"
-                                        name="cep"
-                                        value={formData.cep}
-                                        onChange={handleInputChange}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                                        placeholder="00000-000"
-                                        required
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={handleCepSearch}
-                                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-r-lg font-medium transition duration-300"
-                                    >
-                                        <i className="fas fa-search"></i>
-                                    </button>
-                                </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">

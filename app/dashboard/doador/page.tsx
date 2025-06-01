@@ -16,7 +16,7 @@ interface UserData {
   cpf: string;
   dataNascimento: string;
   celular: string;
-  cep: string;
+  regiao: string;
 }
 
 export default function DashboardDoadorPage() {
@@ -67,7 +67,7 @@ export default function DashboardDoadorPage() {
                   </div>
                   <div>
                     <h3 className="text-sm font-medium text-gray-500">Localização</h3>
-                    <p className="text-gray-800">{userData?.cep}</p>
+                    <p className="text-gray-800">{userData?.regiao}</p>
                   </div>
                 </div>
                 <div className="flex items-start">

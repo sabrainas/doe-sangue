@@ -1,5 +1,6 @@
 "use client";
 
+import { UserData } from "@/types/types";
 import React, {
   createContext,
   useState,
@@ -7,18 +8,6 @@ import React, {
   useMemo,
   ReactNode,
 } from "react";
-
-interface UserData {
-  id: number;
-  nome: string;
-  email: string;
-  cpf: string;
-  dataNascimento: string;
-  tipo: string;
-  celular: string;
-  cep: string;
-  senha: string;
-}
 
 interface UserContextType {
   userData: UserData | null;
