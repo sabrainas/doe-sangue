@@ -9,7 +9,7 @@ interface DonorData {
   dataNascimento: string;
   tipo: string;
   celular: string;
-  cep: string;
+  regiao: string;
   senha: string;
 }
 

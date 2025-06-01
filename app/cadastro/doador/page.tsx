@@ -5,11 +5,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useCreateDonor } from "@/hooks/create/useCreateDonors";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { QueryClient, QueryClientProvider } from "react-query";
+import { useGetListarRegioes } from "@/hooks/get-regions/useGetRegions";
+import router from "next/router";
 
 const queryClient = new QueryClient();
 
 function CadastroDoadorPage() {
-  const { mutate: createDonor, isLoading } = useCreateDonor();
+  const { data: regions, isLoading: isLoadingRegions } = useGetListarRegioes();
+  const { mutate: createDonor, isLoading: isCreatingDonor } = useCreateDonor();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -21,10 +24,21 @@ function CadastroDoadorPage() {
       dataNascimento: formData.get("dataNascimento") as string,
       tipo: formData.get("tipo") as string,
       celular: formData.get("celular") as string,
-      cep: formData.get("cep") as string,
+      regiao: formData.get("regiao") as string,
       senha: formData.get("senha") as string,
     };
-    createDonor(donorData);
+
+    createDonor(donorData, {
+      onSuccess: (response) => {
+        localStorage.setItem("userData", JSON.stringify(response));
+        alert("Doador criado com sucesso!");
+        router.push("/login"); 
+      },
+      onError: (error) => {
+        console.error("Erro ao criar doador:", error);
+        alert("Erro ao criar doador!");
+      },
+    });
   };
 
   return (
@@ -128,17 +142,23 @@ function CadastroDoadorPage() {
               />
             </div>
             <div className="space-y-2">
-              <label htmlFor="cep" className="text-sm font-medium leading-none">
-                CEP
+              <label htmlFor="celular" className="text-sm font-medium leading-none">
+                Região
               </label>
-              <input
-                id="cep"
-                name="cep"
-                type="text"
-                placeholder="Seu CEP"
-                required
+              <select
+                disabled={isLoadingRegions}
                 className="w-full px-4 py-2 border rounded-lg"
-              />
+              >
+                <option value="">Selecione uma região</option>
+                {regions?.map((region: string, index: number) => {
+                  const clinicName = region.split(" - ")[0];
+                  return (
+                    <option key={index} value={region}>
+                      {clinicName}
+                    </option>
+                  );
+                })}
+              </select>
             </div>
             <div className="space-y-2">
               <label htmlFor="senha" className="text-sm font-medium leading-none">
@@ -163,9 +183,9 @@ function CadastroDoadorPage() {
           <button
             type="submit"
             className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition"
-            disabled={isLoading}
+            disabled={isCreatingDonor}
           >
-            {isLoading ? "Cadastrando..." : "Cadastrar"}
+            {isCreatingDonor ? "Cadastrando..." : "Cadastrar"}
           </button>
         </form>
       </div>

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useLogin } from "@/hooks/login/useLogin";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -29,18 +29,14 @@ function LoginPage() {
         <Link href="/" className="flex items-center gap-2 mb-8">
           <div className="bg-red-600 text-white p-2 rounded-lg">
             <i className="fas fa-heartbeat text-2xl"></i>
-          </div>          <span className="text-xl font-bold">Hemolink</span>
+          </div>          
+          <span className="text-xl font-bold">Hemolink</span>
         </Link>
         <div className="w-full max-w-md space-y-6">
           <div className="space-y-2 text-center">
             <h1 className="text-3xl font-bold">Entrar</h1>
-            <p className="text-gray-500">Escolha seu tipo de perfil para continuar</p>
           </div>
           <Tabs defaultValue="doador" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="doador">Doador</TabsTrigger>
-              <TabsTrigger value="hospital">Hospital</TabsTrigger>
-            </TabsList>
             <TabsContent value="doador">
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
@@ -59,25 +55,14 @@ function LoginPage() {
                   {isLoading ? "Entrando..." : "Entrar"}
                 </Button>
               </form>
-            </TabsContent>
-            <TabsContent value="hospital">
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <label htmlFor="email" className="text-sm font-medium leading-none">
-                    Email
-                  </label>
-                  <Input id="email" name="email" type="email" placeholder="Email do hospital" required />
-                </div>
-                <div className="space-y-2">
-                  <label htmlFor="senha" className="text-sm font-medium leading-none">
-                    Senha
-                  </label>
-                  <Input id="senha" name="senha" type="password" placeholder="Senha do hospital" required />
-                </div>
-                <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white" disabled={isLoading}>
-                  {isLoading ? "Entrando..." : "Entrar"}
-                </Button>
-              </form>
+              <div className="text-center p-3">
+                <p className="text-sm text-gray-500">
+                  Ainda não está cadastrado?{" "}
+                  <Link href="/cadastro" className="text-red-600 hover:underline">
+                    Cadastre-se aqui
+                  </Link>
+                </p>
+              </div>
             </TabsContent>
           </Tabs>
         </div>

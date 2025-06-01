@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Droplet, User, Building2 } from "lucide-react"
+import { User } from "lucide-react"
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 export default function CadastroPage() {
@@ -17,10 +17,9 @@ export default function CadastroPage() {
         <div className="w-full max-w-3xl space-y-6">
           <div className="space-y-2 text-center">
             <h1 className="text-3xl font-bold">Cadastre-se</h1>
-            <p className="text-gray-500">Escolha o tipo de perfil que deseja criar</p>
           </div>
-          <div className="grid gap-6 sm:grid-cols-2">
-            <Card className="overflow-hidden">
+          <div className="flex gap-8 sm:grid-cols-2 justify-center">
+            <Card className="overflow-hidden w-96 h-auto">
               <CardHeader className="bg-red-50 p-6">
                 <div className="flex items-center gap-2">
                   <User className="h-6 w-6 text-red-600" />
@@ -48,39 +47,7 @@ export default function CadastroPage() {
                   </li>
                 </ul>
                 <Link href="/cadastro/doador">
-                  <Button className="w-full bg-red-600 hover:bg-red-700">Cadastrar como Doador</Button>
-                </Link>
-              </CardContent>
-            </Card>
-            <Card className="overflow-hidden">
-              <CardHeader className="bg-red-50 p-6">
-                <div className="flex items-center gap-2">
-                  <Building2 className="h-6 w-6 text-red-600" />
-                  <CardTitle>Hemocentro</CardTitle>
-                </div>
-                <CardDescription>Para instituições de coleta de sangue</CardDescription>
-              </CardHeader>
-              <CardContent className="p-6 space-y-4">
-                <ul className="space-y-2 text-sm">
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-500">✓</span>
-                    <span>Gerencie campanhas de doação</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-500">✓</span>
-                    <span>Acompanhe o estoque de sangue</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-500">✓</span>
-                    <span>Comunique-se com doadores</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-500">✓</span>
-                    <span>Gerencie agendamentos</span>
-                  </li>
-                </ul>
-                <Link href="/cadastro/hemocentro">
-                  <Button className="w-full bg-red-600 hover:bg-red-700">Cadastrar como Hemocentro</Button>
+                  <Button className="w-full bg-red-600 hover:bg-red-700 mt-3">Cadastre-se</Button>
                 </Link>
               </CardContent>
             </Card>

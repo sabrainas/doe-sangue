@@ -3,15 +3,17 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { Heart, Calendar, Users, ArrowRight } from "lucide-react"
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="border-b">
-        <div className="container flex h-16 items-center justify-between px-4 md:px-6">
+    <div className="flex flex-col min-h-screen justify-center">
+      {/* Header */}
+      <header className="border-b flex justify-center items-center">
+        <div className="container flex h-16 items-center justify-around px-4 md:px-6">
           <Link href="/" className="flex items-center gap-2">
-              <div className="bg-red-600 text-white p-2 rounded-lg mr-3">
-                <i className="fas fa-heartbeat text-2xl"></i>
+            <div className="bg-red-600 text-white p-2 rounded-lg mr-3">
+              <i className="fas fa-heartbeat text-2xl"></i>
             </div>
             <span className="text-xl font-bold">Hemolink</span>
           </Link>
@@ -39,10 +41,11 @@ export default function Home() {
           </div>
         </div>
       </header>
+
       <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-red-50">
-          <div className="container px-4 md:px-6">
-            <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
+        <section className=" w-full py-12 md:py-24 lg:py-32 bg-red-50">
+          <div className="px-4 md:px-6">
+            <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center mx-auto max-w-6xl">
               <div className="space-y-4">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-red-600">
                   Doe sangue, salve vidas
@@ -55,14 +58,11 @@ export default function Home() {
                   <Link href="/cadastro/doador">
                     <Button className="bg-red-600 hover:bg-red-700">Quero ser doador</Button>
                   </Link>
-                  <Link href="/cadastro/hemocentro">
-                    <Button variant="outline">Sou um hemocentro</Button>
-                  </Link>
                 </div>
               </div>
               <div className="mx-auto w-full max-w-[500px] relative">
                 <Image
-                  src="/placeholder.svg?height=500&width=500"
+                  src="/doar-sangue.jpg?width=500&height=500"
                   width={500}
                   height={500}
                   alt="Doação de sangue"
@@ -74,7 +74,7 @@ export default function Home() {
         </section>
 
         <section id="como-funciona" className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
+          <div className="px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-red-600">Como Funciona</h2>
@@ -89,7 +89,7 @@ export default function Home() {
                   <Users className="h-6 w-6 text-red-600" />
                 </div>
                 <h3 className="text-xl font-bold">Cadastre-se</h3>
-                <p className="text-gray-500">Crie seu perfil como doador ou hemocentro em poucos minutos.</p>
+                <p className="text-gray-500">Crie seu perfil como doador em poucos minutos.</p>
               </div>
               <div className="flex flex-col justify-center space-y-4 rounded-lg border p-6 shadow-sm">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
@@ -110,8 +110,8 @@ export default function Home() {
         </section>
 
         <section id="beneficios" className="w-full py-12 md:py-24 lg:py-32 bg-gray-50">
-          <div className="container px-4 md:px-6">
-            <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
+          <div className="px-4 md:px-6">
+            <div className="flex gap-6 lg:grid-cols-2 lg:gap-12 justify-center items-center">
               <div className="space-y-4">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-red-600">
                   Benefícios para Doadores
@@ -163,7 +163,7 @@ export default function Home() {
         </section>
 
         <section id="quem-pode-doar" className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
+          <div className="px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-red-600">Quem Pode Doar</h2>
@@ -200,7 +200,7 @@ export default function Home() {
               </div>
               <div className="mx-auto w-full max-w-[500px] relative">
                 <Image
-                  src="/placeholder.svg?height=400&width=500"
+                  src="/quem-pode-doar.jpg?height=400&width=500"
                   width={500}
                   height={400}
                   alt="Doação de sangue"
@@ -211,99 +211,7 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <footer className="border-t bg-gray-50">
-        <div className="container flex flex-col gap-4 py-10 md:flex-row md:gap-8 md:py-12 px-4 md:px-6">
-          <div className="flex flex-col gap-2 md:gap-4 md:flex-1">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="bg-red-600 text-white p-2 rounded-lg mr-3">
-                  <i className="fas fa-heartbeat text-2xl"></i>
-              </div>
-              <span className="text-xl font-bold">DoeVida</span>
-            </Link>
-            <p className="text-sm text-gray-500">Conectando doadores e hemocentros para salvar vidas.</p>
-          </div>
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 md:flex-1">
-            <div className="space-y-3">
-              <h3 className="text-sm font-medium">Plataforma</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="#como-funciona" className="text-sm hover:underline">
-                    Como Funciona
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#beneficios" className="text-sm hover:underline">
-                    Benefícios
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#quem-pode-doar" className="text-sm hover:underline">
-                    Quem Pode Doar
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div className="space-y-3">
-              <h3 className="text-sm font-medium">Recursos</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="#" className="text-sm hover:underline">
-                    Blog
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-sm hover:underline">
-                    FAQ
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-sm hover:underline">
-                    Campanhas
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div className="space-y-3">
-              <h3 className="text-sm font-medium">Legal</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="#" className="text-sm hover:underline">
-                    Termos de Uso
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-sm hover:underline">
-                    Privacidade
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-sm hover:underline">
-                    Cookies
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div className="border-t py-6">
-          <div className="container flex flex-col items-center justify-between gap-4 md:flex-row px-4 md:px-6">
-            <p className="text-xs text-gray-500">
-              &copy; {new Date().getFullYear()} Hemolink. Todos os direitos reservados.
-            </p>
-            <div className="flex gap-4">
-              <Link href="#" className="text-xs hover:underline">
-                Termos
-              </Link>
-              <Link href="#" className="text-xs hover:underline">
-                Privacidade
-              </Link>
-              <Link href="#" className="text-xs hover:underline">
-                Cookies
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

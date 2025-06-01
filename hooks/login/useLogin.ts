@@ -1,5 +1,8 @@
 import { useMutation } from "react-query";
 import axios from "@/services/api";
+import { useContext } from "react";
+import { UserContext } from "@/context/UserContext";
+import { useRouter } from "next/navigation";
 
 interface LoginData {
   email: string;
@@ -19,20 +22,25 @@ interface UserData {
 }
 
 const login = async (loginData: LoginData): Promise<UserData> => {
-  const response = await axios.post(
-    `usuario/login?email=${encodeURIComponent(loginData.email)}&senha=${encodeURIComponent(loginData.senha)}`
+  await axios.post(
+    `/usuario/login?email=${encodeURIComponent(loginData.email)}&senha=${encodeURIComponent(loginData.senha)}`,
+    {},
+    { withCredentials: true }
   );
+
+  const response = await axios.get('/usuario/eu', { withCredentials: true });
   return response.data;
 };
 
 export const useLogin = () => {
+  const { setUserData } = useContext(UserContext);
+  const router = useRouter();
+
   return useMutation(login, {
     onSuccess: (data) => {
-      console.log("Login realizado com sucesso!", data);
-
-      localStorage.setItem("user", JSON.stringify(data));
-      window.location.href = "/dashboard/home"; 
-
+      localStorage.setItem("userData", JSON.stringify(data)); 
+      setUserData(data);
+      router.push("/dashboard/doador");
     },
     onError: (error) => {
       console.error("Erro ao realizar login:", error);

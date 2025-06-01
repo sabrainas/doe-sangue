@@ -1,33 +1,49 @@
-import Link from "next/link";
+"use client";
+
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { Bell, User, MapPin, Phone, Hospital, Users, HandHeart, History, CheckCircle, ChartLine, Heart } from "lucide-react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import Link from 'next/link';
+import React, { useContext, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { UserContext } from "@/context/UserContext";
+
+interface UserData {
+  nome: string;
+  tipo: string;
+  email: string;
+  cpf: string;
+  dataNascimento: string;
+  celular: string;
+  cep: string;
+}
 
 export default function DashboardDoadorPage() {
+  const { userData } = useContext(UserContext);
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000); 
+
+    return () => clearTimeout(timeout);
+  }, []);
+
+  useEffect(() => {
+    if (!userData && !isLoading) {
+      router.push("/login");
+    }
+  }, [userData, isLoading, router]);
+
+  if (!userData) return <p>Carregando...</p>;
+
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col">
       {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="bg-red-600 text-white p-2 rounded-lg">
-              <i className="fas fa-heartbeat text-2xl"></i> 
-            </div>
-            <h1 className="text-2xl font-bold text-red-600">HemoLink</h1>
-          </Link>
-          <div className="flex items-center space-x-4">
-            <div className="relative cursor-pointer">
-              <Bell className="text-gray-600 text-xl hover:text-red-600" />
-              <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-600"></span>
-            </div>
-            <div className="flex items-center space-x-2 cursor-pointer group">
-              <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center group-hover:bg-red-200 transition">
-                <User className="text-red-600" />
-              </div>
-              <span className="font-medium text-gray-700 group-hover:text-red-600 hidden md:inline">Meu Perfil</span>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8 flex-grow">
@@ -39,9 +55,9 @@ export default function DashboardDoadorPage() {
                 <div className="h-20 w-20 rounded-full bg-red-100 flex items-center justify-center mb-4">
                   <User className="text-red-600 text-3xl" />
                 </div>
-                <h2 className="text-xl font-bold text-gray-800">Usuário da Silva Sauro</h2>
+                <h2 className="text-xl font-bold text-gray-800">{userData?.nome}</h2>
                 <div className="mt-2 bg-red-600 text-white rounded-full px-4 py-1 text-sm font-bold shadow-md">
-                  Tipo Sanguíneo: O-
+                  Tipo Sanguíneo: {userData?.tipo || "Desconhecido"}
                 </div>
               </div>
               <div className="space-y-4">
@@ -51,7 +67,7 @@ export default function DashboardDoadorPage() {
                   </div>
                   <div>
                     <h3 className="text-sm font-medium text-gray-500">Localização</h3>
-                    <p className="text-gray-800">Guarulhos, SP</p>
+                    <p className="text-gray-800">{userData?.cep}</p>
                   </div>
                 </div>
                 <div className="flex items-start">
@@ -60,7 +76,7 @@ export default function DashboardDoadorPage() {
                   </div>
                   <div>
                     <h3 className="text-sm font-medium text-gray-500">Celular</h3>
-                    <p className="text-gray-800">(11) 12345-6789</p>
+                    <p className="text-gray-800">{userData?.celular}</p>
                   </div>
                 </div>
                 <div className="flex items-start">
@@ -69,37 +85,41 @@ export default function DashboardDoadorPage() {
                   </div>
                   <div>
                     <h3 className="text-sm font-medium text-gray-500">Hospital Doador</h3>
-                    <p className="text-gray-800">Carlo Chagas</p>
+                    <p className="text-gray-800">Desconhecido</p>
                   </div>
                 </div>
               </div>
-              <button className="mt-6 w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-lg transition flex items-center justify-center">
-                <span className="mr-2">Editar dados</span>
-              </button>
+              <Link href="/dashboard/doador/editar" className="block">
+                <button className="mt-6 w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-lg transition flex items-center justify-center">
+                  <span className="mr-2">Editar dados</span>
+                </button>
+              </Link>
             </div>
 
             {/* Quick Stats */}
-            <div className="mt-6 bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition">
-              <h3 className="font-bold text-gray-800 mb-4 flex items-center">
-                <ChartLine className="text-red-600 mr-2" /> Minhas Estatísticas
-              </h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-red-50 p-3 rounded-lg">
-                  <p className="text-sm text-gray-600">Doações</p>
-                  <p className="text-xl font-bold text-red-600">8</p>
-                </div>
-                <div className="bg-red-50 p-3 rounded-lg">
-                  <p className="text-sm text-gray-600">Vidas salvas</p>
-                  <p className="text-xl font-bold text-red-600">24</p>
+            <Link href={"/dashboard/doador/stats-doador"} className="block mt-6">
+              <div className="mt-6 bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition">
+                <h3 className="font-bold text-gray-800 mb-4 flex items-center">
+                  <ChartLine className="text-red-600 mr-2" /> Minhas Estatísticas
+                </h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-red-50 p-3 rounded-lg">
+                    <p className="text-sm text-gray-600">Doações</p>
+                    <p className="text-xl font-bold text-red-600">8</p>
+                  </div>
+                  <div className="bg-red-50 p-3 rounded-lg">
+                    <p className="text-sm text-gray-600">Vidas salvas</p>
+                    <p className="text-xl font-bold text-red-600">24</p>
+                  </div>
                 </div>
               </div>
-            </div>
+            </Link>
           </div>
 
           {/* Right Section - Main Actions */}
           <div className="w-full lg:w-2/3">
             <div className="bg-white rounded-xl p-6 mb-6 shadow-md">
-              <h2 className="text-xl font-bold text-gray-800 mb-2">Bem-vindo de volta, Usuário!</h2>
+              <h2 className="text-xl font-bold text-gray-800 mb-2">Olá, {userData?.nome}!</h2>
               <p className="text-gray-600 mb-6">O que você gostaria de fazer hoje?</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-white border-2 border-red-100 hover:border-red-200 rounded-xl p-6 cursor-pointer flex flex-col items-center text-center shadow-md hover:shadow-lg transition-transform transform hover:-translate-y-1">
@@ -108,9 +128,11 @@ export default function DashboardDoadorPage() {
                   </div>
                   <h3 className="text-lg font-bold text-gray-800 mb-2">Visualizar doadores</h3>
                   <p className="text-gray-600 text-sm mb-4">Encontre outros doadores compatíveis e disponíveis</p>
-                  <button className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-6 rounded-lg transition">
-                    Acessar
-                  </button>
+                  <Link href="/dashboard/doadores">
+                    <button className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-6 rounded-lg transition">
+                      Acessar
+                    </button>
+                  </Link>
                 </div>
                 <div className="bg-white border-2 border-red-100 hover:border-red-200 rounded-xl p-6 cursor-pointer flex flex-col items-center text-center shadow-md hover:shadow-lg transition-transform transform hover:-translate-y-1">
                   <div className="bg-red-100 text-red-600 p-4 rounded-full mb-4">
@@ -118,9 +140,11 @@ export default function DashboardDoadorPage() {
                   </div>
                   <h3 className="text-lg font-bold text-gray-800 mb-2">Solicitar doação</h3>
                   <p className="text-gray-600 text-sm mb-4">Solicite uma doação de sangue para você ou alguém próximo</p>
-                  <button className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-6 rounded-lg transition">
-                    Solicitar
-                  </button>
+                  <Link href="/dashboard/doador/solicitar-sangue">
+                    <button className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-6 rounded-lg transition">
+                      Solicitar
+                    </button>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -162,25 +186,10 @@ export default function DashboardDoadorPage() {
             </div>
           </div>
         </div>
-      </main>
+      </main >
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 py-6">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="bg-red-600 text-white p-2 rounded-lg">
-                <i className="fas fa-heartbeat text-2xl"></i>
-              </div>
-              <h2 className="text-xl font-bold text-red-600">HemoLink</h2>
-            </Link>
-          </div>
-          <div className="mt-6 pt-6 border-t border-gray-100 text-center text-gray-500 text-sm">
-            <p>© 2023 HemoLink. Todos os direitos reservados.</p>
-            <p className="mt-2">Sistema de gerenciamento de doadores de sangue</p>
-          </div>
-        </div>
-      </footer>
-    </div>
+      < Footer />
+    </div >
   );
 }
