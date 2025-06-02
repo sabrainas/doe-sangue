@@ -2,7 +2,7 @@ import { UserContext } from "@/context/UserContext";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
-import axiosInstance from "@/services/api"; 
+import axiosInstance from "@/services/api";
 
 type LoginData = {
   email: string;
@@ -21,25 +21,34 @@ type UserData = {
   senha: string;
 };
 
-export const login = async (loginData: { email: string; senha: string }) => {
+export const login = async (loginData: LoginData): Promise<UserData> => {
   const response = await axiosInstance.post(
-    `/usuario/login?email=${encodeURIComponent(loginData.email)}&senha=${encodeURIComponent(loginData.senha)}`,
-    '', 
+    "/auth/login",
+    loginData,
     {
-      headers: {},
+      headers: {
+        "Content-Type": "application/json",
+      },
       withCredentials: true,
     }
   );
 
-  if (response.data !== "Login bem-sucedido!") {
+  const token = response.data?.token;
+
+  if (!token) {
     throw new Error("Credenciais inválidas");
   }
 
-  const userResponse = await axiosInstance.get('/usuario/eu', { withCredentials: true });
+  localStorage.setItem("token", token);
+
+  const userResponse = await axiosInstance.get("/usuario/eu", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   return userResponse.data;
 };
-
 
 export const useLogin = () => {
   const { setUserData } = useContext(UserContext);

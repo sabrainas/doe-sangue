@@ -17,7 +17,7 @@ function LoginPage() {
   const { setUserData } = useContext(UserContext);
   const [status, setStatus] = useState<"idle" | "pending" | "success" | "error">("idle");
   const router = useRouter();
-
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus("pending");
@@ -39,7 +39,6 @@ function LoginPage() {
       alert("Falha ao realizar login. Verifique suas credenciais e tente novamente.");
     }
   };
-
   return (
     <div className="flex min-h-screen flex-col">
       <div className="flex flex-1 flex-col items-center justify-center px-4 py-12">
