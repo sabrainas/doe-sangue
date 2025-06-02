@@ -4,15 +4,17 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import { useLogin } from "@/hooks/login/useLogin";
+import { login } from "@/hooks/login/useLogin";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useContext } from "react";
+import { UserContext } from "@/context/UserContext";
 
 const queryClient = new QueryClient();
 
 function LoginPage() {
-  const { mutate: login, status } = useLogin();
-
+  const { setUserData } = useContext(UserContext);
+  
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);

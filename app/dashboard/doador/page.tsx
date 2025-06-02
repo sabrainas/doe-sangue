@@ -31,7 +31,10 @@ export default function DashboardDoadorPage() {
 
     return () => clearTimeout(timeout);
   }, []);
-
+  useEffect(() => {
+    console.log("userData no dashboard:", userData);
+  }, [userData]);
+  
   useEffect(() => {
     if (!userData && !isLoading) {
       router.push("/login");

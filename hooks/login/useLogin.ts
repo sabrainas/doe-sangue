@@ -21,18 +21,23 @@ type UserData = {
   senha: string;
 };
 
-const login = async (loginData: LoginData): Promise<UserData> => {
+export const login = async (loginData: LoginData): Promise<UserData> => {
   if (!loginData?.email || !loginData?.senha) {
     throw new Error("Dados de login incompletos.");
   }
 
-  await axiosInstance.post(
+  const loginResponse = await axiosInstance.post(
     `/usuario/login?email=${encodeURIComponent(loginData.email)}&senha=${encodeURIComponent(loginData.senha)}`
   );
 
+  if (loginResponse.data !== "Login bem-sucedido!") {
+    throw new Error("Credenciais inválidas");
+  }
   const response = await axiosInstance.get('/usuario/eu');
+
   return response.data as UserData;
 };
+
 
 export const useLogin = () => {
   const { setUserData } = useContext(UserContext);
