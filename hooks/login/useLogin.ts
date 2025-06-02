@@ -22,14 +22,11 @@ type UserData = {
 };
 
 export const login = async (loginData: { email: string; senha: string }) => {
-  const params = new URLSearchParams();
-  params.append('email', loginData.email);
-  params.append('senha', loginData.senha);
-
-  const response = await axiosInstance.post('/usuario/login', params, {
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    }
+  const response = await axiosInstance.post('/usuario/login', null, {
+    params: {
+      email: loginData.email,
+      senha: loginData.senha,
+    },
   });
 
   if (response.data !== "Login bem-sucedido!") {
