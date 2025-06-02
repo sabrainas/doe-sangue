@@ -7,22 +7,33 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { login } from "@/hooks/login/useLogin";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { UserContext } from "@/context/UserContext";
 
 const queryClient = new QueryClient();
 
 function LoginPage() {
   const { setUserData } = useContext(UserContext);
-  
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const [status, setStatus] = useState<"idle" | "pending" | "success" | "error">("idle");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setStatus("pending");
+
     const formData = new FormData(e.currentTarget);
     const loginData = {
       email: formData.get("email") as string,
       senha: formData.get("senha") as string,
     };
-    login(loginData);
+
+    try {
+      const user = await login(loginData);
+      setUserData(user); 
+      setStatus("success");
+    } catch (error) {
+      setStatus("error");
+      console.error("Falha no login:", error);
+    }
   };
 
   return (
