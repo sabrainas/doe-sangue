@@ -22,21 +22,24 @@ type UserData = {
 };
 
 export const login = async (loginData: { email: string; senha: string }) => {
-  const response = await axiosInstance.post('/usuario/login', null, {
-    params: {
-      email: loginData.email,
-      senha: loginData.senha,
-    },
-  });
+  const response = await axiosInstance.post(
+    `/usuario/login?email=${encodeURIComponent(loginData.email)}&senha=${encodeURIComponent(loginData.senha)}`,
+    '', 
+    {
+      headers: {},
+      withCredentials: true,
+    }
+  );
 
   if (response.data !== "Login bem-sucedido!") {
     throw new Error("Credenciais inválidas");
   }
 
-  const userResponse = await axiosInstance.get('/usuario/eu');
+  const userResponse = await axiosInstance.get('/usuario/eu', { withCredentials: true });
 
   return userResponse.data;
 };
+
 
 export const useLogin = () => {
   const { setUserData } = useContext(UserContext);
