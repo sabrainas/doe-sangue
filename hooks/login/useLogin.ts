@@ -27,14 +27,15 @@ export const login = async (loginData: LoginData): Promise<UserData> => {
   }
 
   const loginResponse = await axiosInstance.post(
-    `/usuario/login?email=${encodeURIComponent(loginData.email)}&senha=${encodeURIComponent(loginData.senha)}`
+    `/usuario/login?email=${encodeURIComponent(loginData.email)}&senha=${encodeURIComponent(loginData.senha)}`,
+    {}
   );
 
   if (loginResponse.data !== "Login bem-sucedido!") {
     throw new Error("Credenciais inválidas");
   }
-  const response = await axiosInstance.get('/usuario/eu');
 
+  const response = await axiosInstance.get('/usuario/eu');
   return response.data as UserData;
 };
 

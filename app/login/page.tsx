@@ -9,12 +9,14 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useContext, useState } from "react";
 import { UserContext } from "@/context/UserContext";
+import { useRouter } from "next/navigation";
 
 const queryClient = new QueryClient();
 
 function LoginPage() {
   const { setUserData } = useContext(UserContext);
   const [status, setStatus] = useState<"idle" | "pending" | "success" | "error">("idle");
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -28,11 +30,13 @@ function LoginPage() {
 
     try {
       const user = await login(loginData);
-      setUserData(user); 
+      setUserData(user);
       setStatus("success");
+      router.push("/dashboard/doador"); 
     } catch (error) {
       setStatus("error");
       console.error("Falha no login:", error);
+      alert("Falha ao realizar login. Verifique suas credenciais e tente novamente.");
     }
   };
 
