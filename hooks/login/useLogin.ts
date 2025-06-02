@@ -33,7 +33,7 @@ export const login = async (loginData: LoginData): Promise<UserData> => {
     }
   );
 
-  const token = response.data?.token;
+  const token = response.data; 
 
   if (!token) {
     throw new Error("Credenciais inválidas");
@@ -46,7 +46,7 @@ export const login = async (loginData: LoginData): Promise<UserData> => {
       Authorization: `Bearer ${token}`,
     },
   });
-
+  
   return userResponse.data;
 };
 
