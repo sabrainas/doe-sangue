@@ -19,6 +19,8 @@ axiosInstance.interceptors.request.use((config) => {
     const token = localStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    } else {
+      console.error("Token não encontrado no interceptor.");
     }
   } else {
     if (config.headers) {

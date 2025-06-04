@@ -1,27 +1,24 @@
-import { useMutation, useQueryClient } from 'react-query';
-import axios from 'axios';
+import { useMutation, useQueryClient, UseMutationResult } from '@tanstack/react-query';
+import api from '@/services/api'; 
 
-const deleteDonor = async (donorId: string): Promise<void> => {
-  const response = await axios.delete(`/api/donors/${donorId}`);
+const deleteDonor = async (): Promise<void> => {
+  const response = await api.delete('/usuario/eu');
   return response.data;
 };
 
-export const useDeleteDonors = () => {
+export const useDeleteDonors = (): UseMutationResult<void, Error, void, unknown> => {
   const queryClient = useQueryClient();
 
-  const mutation = useMutation(deleteDonor, {
+  return useMutation<void, Error, void, unknown>({
+    mutationFn: deleteDonor,
     onSuccess: () => {
-      queryClient.invalidateQueries('donors');
+      queryClient.invalidateQueries();
+      localStorage.removeItem("token");
+      localStorage.removeItem("userData");
+      window.location.href = "/"; 
     },
-    onError: (error) => {
-      console.error('Erro ao deletar doador:', error);
+    onError: (error: Error) => {
+      console.error('Erro ao deletar doador:', error.message);
     },
   });
-
-  return {
-    deleteDonor: mutation.mutate,
-    isLoading: mutation.isLoading,
-    isError: mutation.isError,
-    error: mutation.error,
-  };
 };

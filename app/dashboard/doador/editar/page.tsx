@@ -3,78 +3,95 @@
 import React, { useEffect, useState } from "react";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useGetListarRegioes } from "@/hooks/get-regions/useGetRegions";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEditDonor } from "@/hooks/edit-donor/useEditDonor";
+import { getLoggedUser } from "@/hooks/login/getLoggedUser";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { UserData } from "@/types/types";
-import axiosInstance from "@/services/api";
 
 const queryClient = new QueryClient();
 
 function EditarDoadorPage() {
     const { data: regions, isLoading: isLoadingRegions } = useGetListarRegioes();
     const [formData, setFormData] = useState<Partial<UserData>>({});
+    const [editandoSenha, setEditandoSenha] = useState(false);
+    const [isLoadingUser, setIsLoadingUser] = useState(true);
     const mutation = useEditDonor();
-  
+
     useEffect(() => {
-      const fetchUser = async () => {
-        try {
-          const response = await axiosInstance.get("/usuario/eu");
-          const user = response.data;
-  
-          if (user.dataNascimento) {
-            const date = new Date(user.dataNascimento);
-            const day = String(date.getDate()).padStart(2, "0");
-            const month = String(date.getMonth() + 1).padStart(2, "0");
-            const year = date.getFullYear();
-            user.dataNascimento = `${day}/${month}/${year}`;
-          }
-  
-          setFormData(user);
-        } catch (error) {
-          console.error("Erro ao buscar usuário logado:", error);
-        }
-      };
-  
-      fetchUser();
+        const loadUser = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    console.error("Token não encontrado. Redirecionando para login.");
+                    alert("Você precisa estar logado para acessar esta página.");
+                    window.location.href = "/login";
+                    return;
+                }
+
+                const user = await getLoggedUser();
+                if (user.dataNascimento) {
+                    // Garantindo o formato dd/mm/yyyy para exibir no input
+                    const date = new Date(user.dataNascimento);
+                    const formattedDate = date.toLocaleDateString("pt-BR", {
+                        timeZone: "UTC",
+                    });
+                    user.dataNascimento = formattedDate;
+                }
+
+                setFormData(user);
+            } catch (err) {
+                console.error("Erro ao carregar usuário logado:", err);
+                alert("Erro ao carregar dados do usuário. Verifique sua autenticação.");
+            } finally {
+                setIsLoadingUser(false);
+            }
+        };
+
+        loadUser();
     }, []);
-  
+
     const handleInputChange = (
-      e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ) => {
-      const { name, value } = e.target;
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
     };
-  
+
     const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-  
-      const dataToSend = { ...formData };
-  
-      if (
-        formData.dataNascimento &&
-        typeof formData.dataNascimento === "string"
-      ) {
-        const [day, month, year] = formData.dataNascimento.split("/");
-        const isoDate = new Date(`${year}-${month}-${day}`).toISOString();
-        dataToSend.dataNascimento = isoDate;
-      }
-  
-      if (!dataToSend.senha) {
-        delete dataToSend.senha;
-      }
-  
-      try {
-        await mutation.mutateAsync(dataToSend);
-        alert("Cadastro atualizado com sucesso!");
-      } catch (error) {
-        alert("Erro ao atualizar o cadastro.");
-        console.error(error);
-      }
+        e.preventDefault();
+
+        const dataToSend = { ...formData };
+
+        // Converter dataNascimento para ISO para backend
+        if (
+            formData.dataNascimento &&
+            typeof formData.dataNascimento === "string"
+        ) {
+            const [day, month, year] = formData.dataNascimento.split("/");
+            if (day && month && year) {
+                const isoDate = new Date(`${year}-${month}-${day}T00:00:00Z`).toISOString();
+                dataToSend.dataNascimento = isoDate;
+            }
+        }
+        // Se senha vazia, remove para não enviar
+        if (!dataToSend.senha) delete dataToSend.senha;
+
+        try {
+            await mutation.mutateAsync(dataToSend);
+            alert("Cadastro atualizado com sucesso!");
+        } catch (err) {
+            console.error("Erro ao atualizar cadastro:", err);
+            alert("Erro ao atualizar o cadastro.");
+        }
     };
-     
+
+    if (isLoadingUser) {
+        return <div>Carregando dados do usuário...</div>;
+    }
+
     return (
         <div className="bg-gray-50 min-h-screen">
             <header className="bg-white shadow-sm">
@@ -100,13 +117,18 @@ function EditarDoadorPage() {
                             <div className="bg-red-100 p-3 rounded-lg mr-4">
                                 <i className="fas fa-user-edit text-red-600 text-xl"></i>
                             </div>
-                            <h2 className="text-2xl font-bold text-gray-800">Cadastro de Doador</h2>
+                            <h2 className="text-2xl font-bold text-gray-800">
+                                Editar Cadastro
+                            </h2>
                         </div>
+
                         {formData?.id ? (
                             <form onSubmit={handleSubmit}>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                     <div>
-                                        <label className="block text-gray-700 font-medium mb-2">Nome</label>
+                                        <label className="block text-gray-700 font-medium mb-2">
+                                            Nome
+                                        </label>
                                         <input
                                             type="text"
                                             name="nome"
@@ -120,7 +142,9 @@ function EditarDoadorPage() {
                                 </div>
 
                                 <div className="mb-6">
-                                    <label className="block text-gray-700 font-medium mb-2">Email</label>
+                                    <label className="block text-gray-700 font-medium mb-2">
+                                        Email
+                                    </label>
                                     <input
                                         type="email"
                                         name="email"
@@ -133,7 +157,32 @@ function EditarDoadorPage() {
                                 </div>
 
                                 <div className="mb-6">
-                                    <label className="block text-gray-700 font-medium mb-2">CPF</label>
+                                    <label className="block text-gray-700 font-medium mb-2">
+                                        Tipo Sanguíneo
+                                    </label>
+                                    <select
+                                        name="tipo"
+                                        value={formData.tipo || ""}
+                                        onChange={handleInputChange}
+                                        className="w-full px-4 py-2 border rounded-lg"
+                                        required
+                                    >
+                                        <option value="">Selecione seu tipo sanguíneo</option>
+                                        <option value="A+">A+</option>
+                                        <option value="A-">A-</option>
+                                        <option value="B+">B+</option>
+                                        <option value="B-">B-</option>
+                                        <option value="AB+">AB+</option>
+                                        <option value="AB-">AB-</option>
+                                        <option value="O+">O+</option>
+                                        <option value="O-">O-</option>
+                                    </select>
+                                </div>
+
+                                <div className="mb-6">
+                                    <label className="block text-gray-700 font-medium mb-2">
+                                        CPF
+                                    </label>
                                     <input
                                         type="text"
                                         name="cpf"
@@ -146,7 +195,9 @@ function EditarDoadorPage() {
                                 </div>
 
                                 <div className="mb-6">
-                                    <label className="block text-gray-700 font-medium mb-2">Data de Nascimento</label>
+                                    <label className="block text-gray-700 font-medium mb-2">
+                                        Data de Nascimento
+                                    </label>
                                     <input
                                         type="text"
                                         name="dataNascimento"
@@ -159,7 +210,9 @@ function EditarDoadorPage() {
                                 </div>
 
                                 <div className="mb-6">
-                                    <label className="block text-gray-700 font-medium mb-2">Telefone</label>
+                                    <label className="block text-gray-700 font-medium mb-2">
+                                        Telefone
+                                    </label>
                                     <input
                                         type="text"
                                         name="celular"
@@ -172,7 +225,45 @@ function EditarDoadorPage() {
                                 </div>
 
                                 <div className="mb-6">
-                                    <label htmlFor="regiao" className="block text-gray-700 font-medium mb-2">
+                                    <label className="block text-gray-700 font-medium mb-2">
+                                        Senha
+                                    </label>
+                                    {editandoSenha ? (
+                                        <input
+                                            type="password"
+                                            name="senha"
+                                            value={formData.senha || ""}
+                                            onChange={handleInputChange}
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                                            placeholder="Digite sua nova senha"
+                                        />
+                                    ) : (
+                                        <div className="flex items-center justify-between">
+                                            <input
+                                                type="password"
+                                                value="********"
+                                                disabled
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setEditandoSenha(true);
+                                                    setFormData((prev) => ({ ...prev, senha: "" }));
+                                                }}
+                                                className="ml-4 text-red-600 hover:underline text-sm"
+                                            >
+                                                Trocar senha
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="mb-6">
+                                    <label
+                                        htmlFor="regiao"
+                                        className="block text-gray-700 font-medium mb-2"
+                                    >
                                         Região
                                     </label>
                                     <select

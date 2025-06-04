@@ -125,8 +125,8 @@ export default function DashboardDoadorPage() {
                   <div className="bg-red-100 text-red-600 p-4 rounded-full mb-4">
                     <Users className="text-3xl" />
                   </div>
-                  <h3 className="text-lg font-bold text-gray-800 mb-2">Visualizar doadores</h3>
-                  <p className="text-gray-600 text-sm mb-4">Encontre outros doadores compatíveis e disponíveis</p>
+                  <h3 className="text-lg font-bold text-gray-800 mb-2">Visualizar receptores</h3>
+                  <p className="text-gray-600 text-sm mb-4">Encontre quem precisa de uma doação e realize um agendamento</p>
                   <Link href="/dashboard/doadores">
                     <button className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-6 rounded-lg transition">
                       Acessar
