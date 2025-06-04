@@ -69,7 +69,7 @@ export default function DashboardDoadorPage() {
                     <MapPin className="text-gray-600" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-gray-500">Localização</h3>
+                    <h3 className="text-sm font-medium text-gray-500">Região</h3>
                     <p className="text-gray-800">{userData?.regiao}</p>
                   </div>
                 </div>
@@ -85,10 +85,6 @@ export default function DashboardDoadorPage() {
                 <div className="flex items-start">
                   <div className="bg-gray-100 p-2 rounded-lg mr-3">
                     <Hospital className="text-gray-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-medium text-gray-500">Hospital Doador</h3>
-                    <p className="text-gray-800">Desconhecido</p>
                   </div>
                 </div>
               </div>

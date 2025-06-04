@@ -7,9 +7,7 @@ export default function SolicitarDoacaoPage() {
     const [formData, setFormData] = useState({
         bloodType: "",
         hemocenter: "",
-        urgencyLevel: "",
         description: "",
-        documents: null,
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -119,29 +117,6 @@ export default function SolicitarDoacaoPage() {
                                 </select>
                             </div>
 
-                            {/* Urgência */}
-                            <div className="mb-8">
-                                <label className="block text-gray-700 font-medium mb-3">Nível de Urgência</label>
-                                <div className="grid grid-cols-4 gap-4">
-                                    {[
-                                        { level: "4", label: "Máxima", color: "red", icon: "fas fa-exclamation-triangle" },
-                                        { level: "3", label: "Alta", color: "yellow", icon: "fas fa-exclamation-circle" },
-                                        { level: "2", label: "Média", color: "green", icon: "fas fa-info-circle" },
-                                        { level: "1", label: "Baixa", color: "blue", icon: "fas fa-info" },
-                                    ].map(({ level, label, color, icon }) => (
-                                        <button
-                                            key={level}
-                                            className={`urgency-option bg-${color}-100 border border-${color}-200 text-${color}-800 py-2 px-4 rounded-lg text-center cursor-pointer ${formData.urgencyLevel === level ? `border-${color}-500` : ""
-                                                }`}
-                                            onClick={() => setFormData((prev) => ({ ...prev, urgencyLevel: level }))}
-                                        >
-                                            <i className={`${icon} mb-1`}></i>
-                                            <p className="text-sm font-medium">{label}</p>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
                             {/* Descrição */}
                             <div className="mb-8">
                                 <label className="block text-gray-700 font-medium mb-3">Descrição do Caso</label>
@@ -154,31 +129,6 @@ export default function SolicitarDoacaoPage() {
                                     placeholder="Descreva detalhes sobre o paciente, motivo da necessidade, quantidade necessária, etc."
                                     required
                                 ></textarea>
-                            </div>
-
-                            {/* Anexar Documentos */}
-                            <div className="mb-8">
-                                <label className="block text-gray-700 font-medium mb-3">Anexar Documentos (Opcional)</label>
-                                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                                    <input
-                                        type="file"
-                                        multiple
-                                        onChange={handleFileChange}
-                                        className="hidden"
-                                        id="fileInput"
-                                    />
-                                    <label htmlFor="fileInput" className="cursor-pointer">
-                                        <i className="fas fa-cloud-upload-alt text-gray-400 text-3xl mb-2"></i>
-                                        <p className="text-gray-500 mb-2">Arraste e solte arquivos aqui ou</p>
-                                        <button
-                                            type="button"
-                                            className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition duration-300"
-                                        >
-                                            <i className="fas fa-folder-open mr-2"></i>Selecionar Arquivos
-                                        </button>
-                                        <p className="text-xs text-gray-400 mt-2">Formatos aceitos: PDF, JPG, PNG (Máx. 5MB cada)</p>
-                                    </label>
-                                </div>
                             </div>
 
                             {/* Botões */}

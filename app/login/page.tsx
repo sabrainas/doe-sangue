@@ -4,12 +4,12 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import { login } from "@/hooks/login/useLogin";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useContext, useState } from "react";
 import { UserContext } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
+import { login } from "@/hooks/login/useLogin";
 
 const queryClient = new QueryClient();
 
@@ -31,14 +31,16 @@ function LoginPage() {
     try {
       const user = await login(loginData);
       setUserData(user);
+      localStorage.setItem("userData", JSON.stringify(user));
       setStatus("success");
-      router.push("/dashboard/doador"); 
+      router.push("/dashboard/doador");
     } catch (error) {
       setStatus("error");
       console.error("Falha no login:", error);
       alert("Falha ao realizar login. Verifique suas credenciais e tente novamente.");
     }
   };
+
   return (
     <div className="flex min-h-screen flex-col">
       <div className="flex flex-1 flex-col items-center justify-center px-4 py-12">
@@ -67,7 +69,11 @@ function LoginPage() {
                   </label>
                   <Input id="senha" name="senha" type="password" placeholder="Sua senha" required />
                 </div>
-                <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white" disabled={status === "pending"}>
+                <Button
+                  type="submit"
+                  className="w-full bg-red-600 hover:bg-red-700 text-white"
+                  disabled={status === "pending"}
+                >
                   {status === "pending" ? "Entrando..." : "Entrar"}
                 </Button>
               </form>
