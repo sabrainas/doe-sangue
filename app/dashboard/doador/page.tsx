@@ -1,7 +1,7 @@
 "use client";
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { User, MapPin, Phone, Users, HandHeart, ChartLine, Droplet } from "lucide-react";
+import { User, MapPin, Phone, Users, HandHeart, Droplet } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from 'next/link';
@@ -11,7 +11,10 @@ import { useDeleteDonors } from "@/hooks/delete/useDeleteDonors";
 import { UserContext } from "@/context/UserContext";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useGetHemocenter } from '@/hooks/hemocenter/useGetHemocenter';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useGetUserAgendamento } from '@/hooks/scheduleDonation/useGetUserAgendamento';
+import { useDeleteUserAgendamento } from '@/hooks/scheduleDonation/useDeleteAgendamento';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+
 
 const queryClient = new QueryClient();
 
@@ -21,17 +24,19 @@ function DashboardDoadorPage() {
   const [isAwaiting, setIsAwaiting] = useState(true);
   const deleteMutation = useDeleteDonors();
   const { data: hemocenterData } = useGetHemocenter();
-
+  const { data: agendamentoData, isLoading: isLoadingAgendamento } = useGetUserAgendamento(userData?.id ?? 0);
+  const deleteAgendamentoMutation = useDeleteUserAgendamento(agendamentoData?.id);
+  
+  useEffect(() => {
+    console.log("Agendamento:", agendamentoData);
+  }, [agendamentoData]);
+  
   useEffect(() => {
     const timeout = setTimeout(() => {
       setIsAwaiting(false);
     }, 1000);
-
     return () => clearTimeout(timeout);
   }, []);
-  useEffect(() => {
-    console.log("userData no dashboard:", userData);
-  }, [userData]);
 
   useEffect(() => {
     if (!userData && !isAwaiting) {
@@ -53,16 +58,30 @@ function DashboardDoadorPage() {
       },
     });
   };
+
+  const handleConfirmarDoacao = (id: number) => {
+  deleteAgendamentoMutation.mutate(id, {
+    onSuccess: () => {
+      alert("Doação confirmada e agendamento removido!");
+      queryClient.invalidateQueries({
+        queryKey: ['agendamento-user', userData?.id],
+      });
+    },
+    onError: (error: any) => {
+      alert("Erro ao confirmar doação: " + error.message);
+    },
+  });
+};
+
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col">
-      {/* Header */}
       <Navbar />
 
-      {/* Main Content */}
       <main className="container mx-auto px-4 py-8 flex-grow">
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Left Section - User Card */}
+          {/* Left Sidebar */}
           <div className="w-full lg:w-1/3">
+            {/* Card do Usuário */}
             <div className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition">
               <div className="flex flex-col items-center text-center mb-6">
                 <div className="h-20 w-20 rounded-full bg-red-100 flex items-center justify-center mb-4">
@@ -99,9 +118,48 @@ function DashboardDoadorPage() {
                 </button>
               </Link>
             </div>
+
+            {/* Card de Agendamento - SOMENTE SE TIVER AGENDAMENTO */}
+            {isLoadingAgendamento ? (
+              <div className="mt-6 bg-white rounded-xl p-4 shadow-md">
+                <p className="text-gray-600">Carregando agendamento...</p>
+              </div>
+            ) : agendamentoData ? (
+              <Card className="mt-6">
+                <CardHeader>
+                  <CardTitle>Doação Agendada</CardTitle>
+                  <CardDescription>Veja os detalhes da sua próxima doação</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {agendamentoData.length > 0 ? (
+                      agendamentoData.map((agendamento:any) => (
+                          <div key={agendamento.id} className="space-y-2 border rounded-md p-4">
+                            <p><span className="font-medium">Doador:</span> {agendamento.usuario?.nome || "Não informado"}</p>
+                            <p><span className="font-medium">Data:</span> {new Date(agendamento.data).toLocaleDateString()}</p>
+                            <p><span className="font-medium">Status:</span> {agendamento.status || "Pendente"}</p>
+                            <div className="flex justify-center mt-4">
+                              <button 
+                                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+                                onClick={() => handleConfirmarDoacao(agendamento.id)}
+                              >
+                                Confirmar Doação
+                              </button>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <p>Nenhum agendamento encontrado.</p>
+                      )}
+                  </CardContent>
+              </Card>
+            ) : (
+              <div className="mt-6 bg-white rounded-xl p-4 shadow-md">
+                <p className="text-gray-600">Nenhum agendamento encontrado!</p>
+              </div>
+            )}
           </div>
 
-          {/* Right Section - Main Actions */}
+          {/* Right Section */}
           <div className="w-full lg:w-2/3">
             <div className="bg-white rounded-xl p-6 mb-6 shadow-md">
               <h2 className="text-xl font-bold text-gray-800 mb-2">Olá, {userData?.nome}!</h2>
@@ -134,13 +192,12 @@ function DashboardDoadorPage() {
               </div>
             </div>
 
-            {/* Recent Activity */}
+            {/* Estoque de Sangue */}
             <Card>
               <CardHeader>
                 <CardTitle>Estoque de Sangue</CardTitle>
                 <CardDescription>Situação atual por tipo sanguíneo</CardDescription>
               </CardHeader>
-
               <CardContent>
                 <div className="space-y-4">
                   {hemocenterData ? hemocenterData.map((item) => {
@@ -188,23 +245,21 @@ function DashboardDoadorPage() {
                         </div>
                       </div>
                     );
-                  }): (
+                  }) : (
                     <p className="text-gray-600">Carregando estoque...</p>
                   )}
                 </div>
               </CardContent>
             </Card>
-
-
           </div>
         </div>
+
+        {/* Botão de deletar conta */}
         <div className='mt-8 flex justify-end'>
           <button
-            onClick={() => {
-              handleDeleteAccount();
-            }}
+            onClick={() => handleDeleteAccount()}
             disabled={deleteMutation.isPending}
-            className={`px-4 py-2 rounded-md transition-colors justify-items-end  ${deleteMutation.isPending
+            className={`px-4 py-2 rounded-md transition-colors justify-items-end ${deleteMutation.isPending
               ? "text-gray-400 bg-gray-200 cursor-not-allowed"
               : "text-white bg-red-600 hover:bg-red-700"
               }`}
@@ -212,11 +267,10 @@ function DashboardDoadorPage() {
             {deleteMutation.isPending ? "Deletando conta" : "Deletar conta"}
           </button>
         </div>
-      </main >
+      </main>
 
-      {/* Footer */}
-      < Footer />
-    </div >
+      <Footer />
+    </div>
   );
 }
 

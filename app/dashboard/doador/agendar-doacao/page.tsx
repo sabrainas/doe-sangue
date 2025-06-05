@@ -6,15 +6,17 @@ import { usePostCriarAgendamento } from "@/hooks/scheduleDonation/useScheduleDon
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Link from "next/link";
 import { useGetListarRegioes } from "@/hooks/get-regions/useGetRegions";
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from "next/navigation";
+import { toast, Toaster } from "react-hot-toast";
 
 const queryClient = new QueryClient();
 
 function AgendarDoacaoPage() {
     const searchParams = useSearchParams();
+    const router = useRouter();
     const requisicaoId = searchParams.get("requisicaoId");
-    const { mutate, isPending } = usePostCriarAgendamento();
 
+    const { mutate, isPending } = usePostCriarAgendamento();
     const { data: locais, isLoading: isLoadingRegions } = useGetListarRegioes();
 
     const [formData, setFormData] = useState({
@@ -26,7 +28,7 @@ function AgendarDoacaoPage() {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
-      };    
+    };
 
     const handleBloodTypeSelect = (type: string) => {
         setFormData((prev) => ({ ...prev, bloodType: type }));
@@ -53,35 +55,52 @@ function AgendarDoacaoPage() {
         }
     }, [requisicaoId, locais]);
 
-
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-    
+
         if (!formData.center) {
-            alert("Por favor, selecione um local");
+            toast.error("Por favor, selecione um local.");
             return;
         }
         if (!formData.bloodType) {
-            alert("Por favor, selecione um tipo sanguíneo");
+            toast.error("Por favor, selecione um tipo sanguíneo.");
             return;
         }
         if (!formData.date) {
-            alert("Por favor, selecione uma data");
+            toast.error("Por favor, selecione uma data.");
             return;
         }
-    
+
         const isoDate = new Date(formData.date).toISOString();
-    
-        mutate({
-            verificacao: "pendente",
-            data: isoDate,
-            requisicao: {
-              id: Number(requisicaoId),
+
+        mutate(
+            {
+                verificacao: "pendente",
+                data: isoDate,
+                requisicao: {
+                    id: Number(requisicaoId),
+                },
+            },
+            {
+                onSuccess: () => {
+                    toast.success("Agendamento realizado com sucesso!");
+                    setTimeout(() => {
+                        router.push("/dashboard/doador");
+                    }, 1500);
+                },
+                onError: (error: any) => {
+                    toast.error(
+                        error?.response?.data?.message ||
+                            "Erro ao realizar o agendamento (Já existe agendamento marcado!!)"
+                    );
+                },
             }
-          });          
+        );
     };
+
     return (
         <div className="bg-gray-50 min-h-screen flex flex-col">
+            <Toaster position="top-center" />
             <header className="bg-white shadow-sm">
                 <div className="container mx-auto px-4 py-4 flex justify-between items-center">
                     <div className="flex items-center">
@@ -154,8 +173,9 @@ function AgendarDoacaoPage() {
                                         <button
                                             type="button"
                                             key={type}
-                                            className={`bg-red-600 text-white py-2 px-4 rounded-lg text-center cursor-pointer ${formData.bloodType === type ? "opacity-100" : "opacity-60"
-                                                }`}
+                                            className={`bg-red-600 text-white py-2 px-4 rounded-lg text-center cursor-pointer ${
+                                                formData.bloodType === type ? "opacity-100" : "opacity-60"
+                                            }`}
                                             onClick={() => handleBloodTypeSelect(type)}
                                         >
                                             {type}
@@ -175,8 +195,9 @@ function AgendarDoacaoPage() {
                                 <button
                                     type="submit"
                                     disabled={isPending}
-                                    className={`bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium transition duration-300 flex items-center ${isPending ? "opacity-50 cursor-not-allowed" : ""
-                                        }`}
+                                    className={`bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium transition duration-300 flex items-center ${
+                                        isPending ? "opacity-50 cursor-not-allowed" : ""
+                                    }`}
                                 >
                                     <i className="fas fa-calendar-check mr-2"></i>{" "}
                                     {isPending ? "Agendando..." : "Confirmar Agendamento"}
@@ -192,10 +213,10 @@ function AgendarDoacaoPage() {
 
 export default function DashboardDoadorPageWrapper() {
     return (
-      <QueryClientProvider client={queryClient}>
-        <Suspense fallback={<div>Carregando...</div>}>
-          <AgendarDoacaoPage />
-        </Suspense>
-      </QueryClientProvider>
+        <QueryClientProvider client={queryClient}>
+            <Suspense fallback={<div>Carregando...</div>}>
+                <AgendarDoacaoPage />
+            </Suspense>
+        </QueryClientProvider>
     );
-  }
+}
