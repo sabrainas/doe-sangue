@@ -51,15 +51,15 @@ function DashboardDoadorPage() {
                                 <Card className="border-l-4 border-l-red-600 rounded-xl shadow-md transition-transform transform hover:-translate-y-1 hover:shadow-lg">
                                     <div className="p-5">
                                         <div className="flex items-start justify-between">
-                                            <div className="flex items-center">
-                                                <div className="bg-red-100 p-3 rounded-lg mr-4">
-                                                    <i className="fas fa-user text-red-600 text-xl"></i>
-                                                </div>
-                                                <div>
-                                                    <h3 className="text-lg font-bold text-gray-800">{receptor.nome}</h3>
-                                                    <p className="text-sm text-gray-600 mt-1">Descrição: {receptor.descricao}</p>
-                                                </div>
+                                        <div className="flex items-center">
+                                            <div className="bg-red-100 p-3 rounded-lg mr-4">
+                                            <i className="fas fa-user text-red-600 text-xl"></i>
                                             </div>
+                                            <div className="max-w-[200px]"> {/* limitar largura para o texto */}
+                                            <h3 className="text-lg font-bold text-gray-800 truncate">{receptor.nome}</h3>
+                                            <p className="text-sm text-gray-600 mt-1 truncate">Descrição: {receptor.descricao}</p>
+                                            </div>
+                                        </div>
                                         </div>
                                     </div>
                                 </Card>
