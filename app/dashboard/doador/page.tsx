@@ -1,48 +1,58 @@
 "use client";
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { Bell, User, MapPin, Phone, Hospital, Users, HandHeart, History, CheckCircle, ChartLine, Heart } from "lucide-react";
+import { User, MapPin, Phone, Users, HandHeart, ChartLine, Droplet } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from 'next/link';
 import React, { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useDeleteDonors } from "@/hooks/delete/useDeleteDonors";
 import { UserContext } from "@/context/UserContext";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useGetHemocenter } from '@/hooks/hemocenter/useGetHemocenter';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-interface UserData {
-  nome: string;
-  tipo: string;
-  email: string;
-  cpf: string;
-  dataNascimento: string;
-  celular: string;
-  regiao: string;
-}
+const queryClient = new QueryClient();
 
-export default function DashboardDoadorPage() {
+function DashboardDoadorPage() {
   const { userData } = useContext(UserContext);
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isAwaiting, setIsAwaiting] = useState(true);
+  const deleteMutation = useDeleteDonors();
+  const { data: hemocenterData } = useGetHemocenter();
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000); 
+      setIsAwaiting(false);
+    }, 1000);
 
     return () => clearTimeout(timeout);
   }, []);
   useEffect(() => {
     console.log("userData no dashboard:", userData);
   }, [userData]);
-  
+
   useEffect(() => {
-    if (!userData && !isLoading) {
+    if (!userData && !isAwaiting) {
       router.push("/login");
     }
-  }, [userData, isLoading, router]);
+  }, [userData, isAwaiting, router]);
 
   if (!userData) return <p>Carregando...</p>;
 
+  const handleDeleteAccount = () => {
+    deleteMutation.mutate(undefined, {
+      onSuccess: () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userData");
+        window.location.href = "/";
+      },
+      onError: (error: Error) => {
+        alert("Erro ao encerrar conta: " + error.message);
+      },
+    });
+  };
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col">
       {/* Header */}
@@ -80,11 +90,6 @@ export default function DashboardDoadorPage() {
                   <div>
                     <h3 className="text-sm font-medium text-gray-500">Celular</h3>
                     <p className="text-gray-800">{userData?.celular}</p>
-                  </div>
-                </div>
-                <div className="flex items-start">
-                  <div className="bg-gray-100 p-2 rounded-lg mr-3">
-                    <Hospital className="text-gray-600" />
                   </div>
                 </div>
               </div>
@@ -149,46 +154,95 @@ export default function DashboardDoadorPage() {
             </div>
 
             {/* Recent Activity */}
-            <div className="bg-white rounded-xl p-6 shadow-md">
-              <h3 className="font-bold text-gray-800 mb-4 flex items-center">
-                <History className="text-red-600 mr-2" /> Atividade Recente
-              </h3>
-              <div className="space-y-4">
-                <div className="flex items-start pb-4 border-b border-gray-100">
-                  <div className="bg-green-100 text-green-600 p-2 rounded-lg mr-3">
-                    <CheckCircle />
-                  </div>
-                  <div>
-                    <p className="text-gray-800 font-medium">Doação realizada</p>
-                    <p className="text-sm text-gray-500">Você doou sangue no Hemocentro de São Paulo em 15/06/2023</p>
-                  </div>
+            <Card>
+              <CardHeader>
+                <CardTitle>Estoque de Sangue</CardTitle>
+                <CardDescription>Situação atual por tipo sanguíneo</CardDescription>
+              </CardHeader>
+
+              <CardContent>
+                <div className="space-y-4">
+                  {hemocenterData ? hemocenterData.map((item) => {
+                    let corTexto = "";
+                    let corBarra = "";
+                    let largura = "";
+                    let status = "";
+
+                    switch (item.nivel) {
+                      case 1:
+                        corTexto = "text-green-600";
+                        corBarra = "bg-green-500";
+                        largura = "100%";
+                        status = "Estável";
+                        break;
+                      case 2:
+                        corTexto = "text-yellow-600";
+                        corBarra = "bg-yellow-500";
+                        largura = "50%";
+                        status = "Atenção";
+                        break;
+                      case 3:
+                      default:
+                        corTexto = "text-red-600";
+                        corBarra = "bg-red-500";
+                        largura = "15%";
+                        status = "Crítico";
+                        break;
+                    }
+
+                    return (
+                      <div key={item.tipo} className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Droplet className="h-5 w-5 text-red-600" />
+                            <span className="font-medium">{item.tipo}</span>
+                          </div>
+                          <span className={`text-sm font-medium ${corTexto}`}>{status}</span>
+                        </div>
+                        <div className="h-2 w-full rounded-full bg-gray-100">
+                          <div
+                            className={`h-2 rounded-full ${corBarra}`}
+                            style={{ width: largura }}
+                          ></div>
+                        </div>
+                      </div>
+                    );
+                  }): (
+                    <p className="text-gray-600">Carregando estoque...</p>
+                  )}
                 </div>
-                <div className="flex items-start pb-4 border-b border-gray-100">
-                  <div className="bg-blue-100 text-blue-600 p-2 rounded-lg mr-3">
-                    <Bell />
-                  </div>
-                  <div>
-                    <p className="text-gray-800 font-medium">Lembrete de doação</p>
-                    <p className="text-sm text-gray-500">Você pode doar sangue novamente a partir de 15/09/2023</p>
-                  </div>
-                </div>
-                <div className="flex items-start">
-                  <div className="bg-purple-100 text-purple-600 p-2 rounded-lg mr-3">
-                    <Heart />
-                  </div>
-                  <div>
-                    <p className="text-gray-800 font-medium">Impacto positivo</p>
-                    <p className="text-sm text-gray-500">Sua última doação ajudou a salvar 3 vidas</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
+
+
           </div>
+        </div>
+        <div className='mt-8 flex justify-end'>
+          <button
+            onClick={() => {
+              handleDeleteAccount();
+            }}
+            disabled={deleteMutation.isPending}
+            className={`px-4 py-2 rounded-md transition-colors justify-items-end  ${deleteMutation.isPending
+              ? "text-gray-400 bg-gray-200 cursor-not-allowed"
+              : "text-white bg-red-600 hover:bg-red-700"
+              }`}
+          >
+            {deleteMutation.isPending ? "Deletando conta" : "Deletar conta"}
+          </button>
         </div>
       </main >
 
       {/* Footer */}
       < Footer />
     </div >
+  );
+}
+
+export default function VerDoadorPageWrapper() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <DashboardDoadorPage />
+    </QueryClientProvider>
   );
 }

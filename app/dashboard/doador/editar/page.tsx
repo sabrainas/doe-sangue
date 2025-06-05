@@ -30,7 +30,6 @@ function EditarDoadorPage() {
 
                 const user = await getLoggedUser();
                 if (user.dataNascimento) {
-                    // Garantindo o formato dd/mm/yyyy para exibir no input
                     const date = new Date(user.dataNascimento);
                     const formattedDate = date.toLocaleDateString("pt-BR", {
                         timeZone: "UTC",
@@ -65,7 +64,6 @@ function EditarDoadorPage() {
 
         const dataToSend = { ...formData };
 
-        // Converter dataNascimento para ISO para backend
         if (
             formData.dataNascimento &&
             typeof formData.dataNascimento === "string"
@@ -76,7 +74,6 @@ function EditarDoadorPage() {
                 dataToSend.dataNascimento = isoDate;
             }
         }
-        // Se senha vazia, remove para não enviar
         if (!dataToSend.senha) delete dataToSend.senha;
 
         try {
@@ -124,7 +121,7 @@ function EditarDoadorPage() {
 
                         {formData?.id ? (
                             <form onSubmit={handleSubmit}>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div className="grid grid-cols-1 gap-6 mb-6">
                                     <div>
                                         <label className="block text-gray-700 font-medium mb-2">
                                             Nome

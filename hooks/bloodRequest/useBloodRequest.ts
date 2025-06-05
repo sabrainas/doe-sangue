@@ -1,24 +1,20 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, UseMutationResult } from "@tanstack/react-query";
 import axios from "@/services/api";
 
 interface RequestBloodPayload {
+  nome: string;
   tipo: string;
-  local: string;
   descricao: string;
 }
 
-const criarRequisicao = async (usuarioId: number, data: RequestBloodPayload) => {
-  const response = await axios.post(`/requisicoes/usuarios/${usuarioId}`, {
-    ...data,
-    id: 0,
-    dataCriacao: new Date().toISOString(),
-    usuario: null,
-  });
+const criarRequisicao = async (data: RequestBloodPayload): Promise<any> => {
+  const response = await axios.post("/requisicoes/usuarios/eu", data);
   return response.data;
 };
 
-export const usePostCriarRequisicao = (usuarioId: number) => {
-  return useMutation((data: RequestBloodPayload) => criarRequisicao(usuarioId, data), {
+export const usePostCriarRequisicao = (): UseMutationResult<any, Error, RequestBloodPayload> => {
+  return useMutation<RequestBloodPayload, Error, RequestBloodPayload>({
+    mutationFn: criarRequisicao,
     onSuccess: () => {
       console.log("Requisição criada com sucesso!");
     },

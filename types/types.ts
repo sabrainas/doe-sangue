@@ -9,3 +9,12 @@ export interface UserData {
     regiao: string; 
     senha: string;
   }
+
+  export interface Hemocenter {
+    id: number;
+    nome: string;
+    data: string;
+    cidade: string;
+    tipo: string;
+    nivel: number;
+  }

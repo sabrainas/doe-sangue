@@ -1,18 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { Bell, User } from "lucide-react";
+import {  User } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
-import { useDeleteDonors } from "@/hooks/delete/useDeleteDonors";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
 
-function Navbar () {
+function Navbar() {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-
-  const deleteMutation = useDeleteDonors();
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -25,23 +22,14 @@ function Navbar () {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleSeeProfile = () => {
+    window.location.href = "/dashboard/doador";    
+  }
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userData");
     window.location.href = "/";
-  };
-
-  const handleDeleteAccount = () => {
-    deleteMutation.mutate(undefined, {
-      onSuccess: () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userData");
-        window.location.href = "/";
-      },
-      onError: (error: Error) => {
-        alert("Erro ao encerrar conta: " + error.message);
-      },
-    });
   };
 
   return (
@@ -55,10 +43,6 @@ function Navbar () {
         </Link>
 
         <div className="flex items-center space-x-4 relative">
-          <div className="relative">
-            <Bell className="text-gray-600 text-xl cursor-pointer" />
-            <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-600"></span>
-          </div>
 
           {/* Avatar com dropdown */}
           <div ref={menuRef} className="relative">
@@ -73,26 +57,22 @@ function Navbar () {
               <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-50">
                 <button
                   onClick={() => {
-                    handleLogout();
+                    handleSeeProfile();
                     setShowMenu(false);
                   }}
                   className="w-full text-left px-4 py-2 hover:bg-gray-100"
                 >
-                  Logout
+                  Ver Perfil
                 </button>
+
                 <button
                   onClick={() => {
-                    handleDeleteAccount();
+                    handleLogout();
                     setShowMenu(false);
                   }}
-                  disabled={deleteMutation.isPending}
-                  className={`w-full text-left px-4 py-2 ${
-                    deleteMutation.isPending
-                      ? "text-gray-400 cursor-not-allowed"
-                      : "text-red-600 hover:bg-gray-100"
-                  }`}
+                  className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
                 >
-                  {deleteMutation.isPending ? "Encerrando conta..." : "Encerrar conta"}
+                  Logout
                 </button>
               </div>
             )}
@@ -104,10 +84,9 @@ function Navbar () {
 };
 
 export default function LoginPageWrapper() {
-    return (
-      <QueryClientProvider client={queryClient}>
-        <Navbar />
-      </QueryClientProvider>
-    );
-  }
-  
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Navbar />
+    </QueryClientProvider>
+  );
+}
