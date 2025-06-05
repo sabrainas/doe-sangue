@@ -33,7 +33,7 @@ function LoginPage() {
       setUserData(user);
       localStorage.setItem("userData", JSON.stringify(user));
       setStatus("success");
-      router.push("/dashboard/doador");
+      router.push("/dashboard/doadores");
     } catch (error) {
       setStatus("error");
       console.error("Falha no login:", error);

@@ -7,13 +7,20 @@ interface RequestBloodPayload {
   descricao: string;
 }
 
+interface RequestBloodResponse {
+  id: number;
+  nome: string;
+  tipo: string;
+  descricao: string;
+}
+
 const criarRequisicao = async (data: RequestBloodPayload): Promise<any> => {
   const response = await axios.post("/requisicoes/usuarios/eu", data);
   return response.data;
 };
 
 export const usePostCriarRequisicao = (): UseMutationResult<any, Error, RequestBloodPayload> => {
-  return useMutation<RequestBloodPayload, Error, RequestBloodPayload>({
+  return useMutation<RequestBloodResponse, Error, RequestBloodPayload>({
     mutationFn: criarRequisicao,
     onSuccess: () => {
       console.log("Requisição criada com sucesso!");

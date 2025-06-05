@@ -99,25 +99,6 @@ function DashboardDoadorPage() {
                 </button>
               </Link>
             </div>
-
-            {/* Quick Stats */}
-            <Link href={"/dashboard/doador/stats-doador"} className="block mt-6">
-              <div className="mt-6 bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition">
-                <h3 className="font-bold text-gray-800 mb-4 flex items-center">
-                  <ChartLine className="text-red-600 mr-2" /> Minhas Estatísticas
-                </h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-red-50 p-3 rounded-lg">
-                    <p className="text-sm text-gray-600">Doações</p>
-                    <p className="text-xl font-bold text-red-600">8</p>
-                  </div>
-                  <div className="bg-red-50 p-3 rounded-lg">
-                    <p className="text-sm text-gray-600">Vidas salvas</p>
-                    <p className="text-xl font-bold text-red-600">24</p>
-                  </div>
-                </div>
-              </div>
-            </Link>
           </div>
 
           {/* Right Section - Main Actions */}
