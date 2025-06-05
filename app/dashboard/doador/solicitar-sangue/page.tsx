@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { usePostCriarRequisicao } from "@/hooks/bloodRequest/useBloodRequest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -131,8 +131,10 @@ function SolicitarDoacaoPage() {
 
 export default function DashboardDoadorPageWrapper() {
     return (
-        <QueryClientProvider client={queryClient}>
-            <SolicitarDoacaoPage />
-        </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <Suspense fallback={<div>Carregando...</div>}>
+          <SolicitarDoacaoPage />
+        </Suspense>
+      </QueryClientProvider>
     );
 }

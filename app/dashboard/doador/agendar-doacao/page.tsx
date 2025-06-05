@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { usePostCriarAgendamento } from "@/hooks/scheduleDonation/useScheduleDonation";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -192,8 +192,10 @@ function AgendarDoacaoPage() {
 
 export default function DashboardDoadorPageWrapper() {
     return (
-        <QueryClientProvider client={queryClient}>
-            <AgendarDoacaoPage />
-        </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <Suspense fallback={<div>Carregando...</div>}>
+          <AgendarDoacaoPage />
+        </Suspense>
+      </QueryClientProvider>
     );
-}
+  }
